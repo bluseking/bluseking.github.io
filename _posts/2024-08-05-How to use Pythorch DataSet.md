@@ -1,4 +1,4 @@
-Sure, here's a detailed explanation of the provided code in English:
+How to use Pytorch Dataset:
 
 ### Class and Initialization Method
 
