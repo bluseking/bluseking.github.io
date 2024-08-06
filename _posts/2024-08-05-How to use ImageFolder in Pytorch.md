@@ -1,5 +1,3 @@
-Sure! Here is the code with the comments translated into English:
-
 ```python
 import random
 from logging import getLogger
