@@ -1,4 +1,6 @@
-``` Python
+Sure! Here is the code with the comments translated into English:
+
+```python
 import random
 from logging import getLogger
 from PIL import ImageFilter
@@ -11,9 +13,9 @@ import torchvision
 
 logger = getLogger()
 
-# PIL随机高斯模糊类
+# PIL Random Gaussian Blur Class
 class PILRandomGaussianBlur(object):
-    def __init__(self, p=0.5, radius_min=0.1, radius_max=2.):
+    def __init__(self, p=0.5, radius_min=0.1, radius_max=2.0):
         self.prob = p
         self.radius_min = radius_min
         self.radius_max = radius_max
@@ -28,7 +30,7 @@ class PILRandomGaussianBlur(object):
             )
         )
 
-# 获取颜色扭曲变换
+# Get color distortion transform
 def get_color_distortion(s=1.0):
     color_jitter = transforms.ColorJitter(0.8 * s, 0.8 * s, 0.8 * s, 0.2 * s)
     rnd_color_jitter = transforms.RandomApply([color_jitter], p=0.8)
@@ -36,7 +38,7 @@ def get_color_distortion(s=1.0):
     color_distort = transforms.Compose([rnd_color_jitter, rnd_gray])
     return color_distort
 
-# 多裁剪数据集类
+# MultiCropDataset class
 class MultiCropDataset(datasets.ImageFolder):
     def __init__(
         self,
@@ -82,9 +84,9 @@ class MultiCropDataset(datasets.ImageFolder):
             return index, multi_crops
         return multi_crops
 
-# 示例使用
+# Example usage
 if __name__ == "__main__":
-    data_path = "/content/train"  # 修改为你的数据集路径/content/picture
+    data_path = "/content/train"  # Modify to your dataset path
     size_crops = [224, 96]
     nmb_crops = [2, 3]
     min_scale_crops = [0.6, 0.2]
@@ -100,20 +102,26 @@ if __name__ == "__main__":
         return_index=True,
     )
 
-    # 获取一组变换后的样本
+    # Get a set of transformed samples
     index, multi_crops = dataset[1]
 
-    mean = [0.485, 0.456, 0.406]  
-    std = [0.228, 0.224, 0.225]  
+    mean = [0.485, 0.456, 0.406]
+    std = [0.228, 0.224, 0.225]
 
-    # 展示变换后的图像
+    # Display the transformed images
     fig, axes = plt.subplots(1, len(multi_crops), figsize=(15, 5))
     for i, crop in enumerate(multi_crops):
         print(crop.size)
-        crop = crop.permute(1, 2, 0)  # 从 (C, H, W) 转换为 (H, W, C)
-        crop = crop * torch.tensor(std) + torch.tensor(mean)  # 反归一化
-        crop = np.clip(crop.numpy(), 0, 1)  # 保证数值在 [0, 1] 范围内
+        crop = crop.permute(1, 2, 0)  # Convert from (C, H, W) to (H, W, C)
+        crop = crop * torch.tensor(std) + torch.tensor(mean)  # Denormalize
+        crop = np.clip(crop.numpy(), 0, 1)  # Ensure values are within [0, 1]
         axes[i].imshow(crop)
         axes[i].axis('off')
     plt.show()
 ```
+If your dataset returns a single tensor, the output from the DataLoader will be a tensor of shape (batch_size, *sample_shape).
+
+If your dataset returns multiple tensors, the output from the DataLoader will be a tuple containing multiple tensors, each of shape (batch_size, *sub_sample_shape).
+
+If your dataset returns a custom data structure, the output from the DataLoader will preserve that data structure, and its elements will be batched accordingly.
+
